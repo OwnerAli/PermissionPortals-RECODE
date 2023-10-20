@@ -2,7 +2,7 @@ package me.ogali.permissionportals.listeners;
 
 import lombok.AllArgsConstructor;
 import me.ogali.permissionportals.PermissionPortals;
-import me.ogali.permissionportals.utilities.Chat;
+import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -14,14 +14,17 @@ public class PortalEnterListener implements Listener {
 
     @EventHandler
     public void onPortalEnter(PlayerTeleportEvent event) {
-        if (event.getCause() != PlayerTeleportEvent.TeleportCause.NETHER_PORTAL &&
+        if (main.getConfig().getBoolean("global.tp-without-perms") &&
+                event.getCause() != PlayerTeleportEvent.TeleportCause.NETHER_PORTAL &&
                 event.getCause() != PlayerTeleportEvent.TeleportCause.END_PORTAL) return;
+
         main.getPortalPlayerRegistry().getPortalPlayer(event.getPlayer()).ifPresent(portalPlayer -> {
-            if (event.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL) {
+            World.Environment environment = event.getTo().getWorld().getEnvironment();
+            if (environment.equals(World.Environment.NETHER)) {
                 portalPlayer.enterPortal(event, true);
-                return;
+            } else if (environment.equals(World.Environment.THE_END)) {
+                portalPlayer.enterPortal(event, false);
             }
-            portalPlayer.enterPortal(event, false);
         });
     }
 

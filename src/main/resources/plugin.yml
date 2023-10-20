@@ -1,7 +1,7 @@
 name: PermissionPortals
 version: '${project.version}'
 main: me.ogali.permissionportals.PermissionPortals
-api-version: 1.18
+api-version: 1.13
 softdepend:
   - Vault
 commands:
